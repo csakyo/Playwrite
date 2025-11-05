@@ -26,9 +26,16 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      # ⬇️ Secrets から BASIC 認証情報を環境変数として渡す
-      - name: Run Playwright tests
-        run: npx playwright test seed.spec.ts
+      # ⬇️ seed テスト（データ準備など）
+      - name: Run seed test
+        run: npx playwright test tests/seed.spec.ts
+        env:
+          BASIC_USER: ${{ secrets.BASIC_USER }}
+          BASIC_PASS: ${{ secrets.BASIC_PASS }}
+
+      # ⬇️ 通常の Playwright テスト（seedの後に実行）
+      - name: Run all Playwright tests
+        run: npx playwright test --grep-invert @seed
         env:
           BASIC_USER: ${{ secrets.BASIC_USER }}
           BASIC_PASS: ${{ secrets.BASIC_PASS }}
